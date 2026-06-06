@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Battlefield</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0f0f1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #ff4655;
+            border-radius: 10px;
+            background: rgba(255, 70, 85, 0.1);
+            box-shadow: 0 0 20px rgba(255, 70, 85, 0.5);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #ff4655;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 70, 85, 0.8);
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #a0a0b8;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background-color: #ff4655;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background-color: #ffffff;
+            color: #ff4655;
+            box-shadow: 0 0 15px #ffffff;
+            transform: scale(1.05);
+        }
+
+        .battle-zone {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00ffcc;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Anime Battlefield</h1>
+        <p>Welcome to the ultimate arena where your favorite anime characters clash for glory! Prepare your strategy and enter the battle.</p>
+        
+        <button class="btn" onclick="startBattle()">Enter Battle</button>
+        
+        <div class="battle-zone" id="battleText"></div>
+    </div>
+
+    <script>
+        function startBattle() {
+            const actions = [
+                "⚔️ Super Saiyan Powering Up...",
+                "🔥 Domain Expansion: Infinite Void!",
+                "⚡ Chidori vs Rasengan Clashing!",
+                "🛡️ Gear 5 Luffy is Laughing!",
+                "👑 The Battlefield is Ready! Choose your fighter!"
+            ];
+            
+            const battleText = document.getElementById('battleText');
+            let count = 0;
+            
+            const interval = setInterval(() => {
+                battleText.innerText = actions[count];
+                count++;
+                if(count >= actions.length) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>
+

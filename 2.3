@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Battlefield Ultra VFX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #020208;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+        }
+
+        /* Canvas for Particle VFX Background */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Main Arena Container */
+        .arena {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 80%);
+        }
+
+        /* Glowing Neon Title with Animation */
+        h1 {
+            font-size: 4rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 40px #ff007c, 0 0 80px #ff007c;
+            animation: pulse 2s infinite alternate;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); text-shadow: 0 0 10px #00f0ff, 0 0 40px #ff007c; }
+            100% { transform: scale(1.05); text-shadow: 0 0 20px #00f0ff, 0 0 60px #ff00aa, 0 0 100px #ff00aa; }
+        }
+
+        /* Sci-Fi Cyberpunk Button */
+        .vfx-btn {
+            position: relative;
+            padding: 20px 50px;
+            font-size: 1.8rem;
+            color: #00f0ff;
+            border: 3px solid #00f0ff;
+            background: transparent;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            overflow: hidden;
+            transition: 0.5s;
+            border-radius: 50px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .vfx-btn:hover {
+            color: #020208;
+            background: #00f0ff;
+            box-shadow: 0 0 50px #00f0ff;
+            text-shadow: none;
+        }
+
+        /* Visual Effects Overlay */
+        .vfx-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0%;
+            height: 10px;
+            background: linear-gradient(90deg, transparent, #00f0ff, #fff, #ff00aa, transparent);
+            box-shadow: 0 0 30px #00f0ff, 0 0 60px #ff00aa;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        /* Screen Shake Animation Class */
+        .shake {
+            animation: ScreenShake 0.5s linear infinite;
+        }
+
+        @keyframes ScreenShake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(2px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Huge Dynamic Text Popup */
+        #status-text {
+            font-size: 2.5rem;
+            margin-top: 30px;
+            color: #fff;
+            min-height: 60px;
+            text-shadow: 0 0 10px #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="vfx-overlay" id="energyBeam"></div>
+
+    <div class="arena" id="battleArena">
+        <h1 id="title">Anime Battlefield</h1>
+        <button class="vfx-btn" onclick="triggerVFX()">Release Power</button>
+        <div id="status-text"></div>
+    </div>
+
+    <script>
+        // BACKGROUND VFX: Interactive Particle System
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * -3 - 0.5; // moving upwards
+                this.color = Math.random() > 0.5 ? '#00f0ff' : '#ff00aa';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // CLICK VFX: Screen Shake, Laser Beam, Ultimate Status
+        function triggerVFX() {
+            const arena = document.getElementById('battleArena');
+            const beam = document.getElementById('energyBeam');
+            const text = document.getElementById('status-text');
+
+            const hypes = [
+                "🔥 KAMEHAMEHA!!!",
+                "⚡ CHIDORI BLAST!",
+                "🌌 DOMAIN EXPANSION Unleashed!",
+                "✨ GEAR 5 OVERDRIVE!!!",
+                "⚔️ OMNI-SLASH ACTIVATED!"
+            ];
+
+            // Pick a random hype text
+            text.innerText = hypes[Math.floor(Math.random() * hypes.length)];
+            text.style.color = Math.random() > 0.5 ? '#00f0ff' : '#ff00aa';
+            text.style.textShadow = `0 0 20px ${text.style.color}`;
+
+            // Trigger Screen Shake VFX
+            arena.classList.add('shake');
+            
+            // Trigger Energy Laser Beam VFX
+            beam.style.opacity = '1';
+            beam.style.width = '100%';
+            beam.style.height = '150px';
+            beam.style.transition = 'all 0.1s ease-out';
+
+            // Reset effects after explosion
+            setTimeout(() => {
+                arena.classList.remove('shake');
+                beam.style.opacity = '0';
+                beam.style.width = '0%';
+                beam.style.height = '10px';
+                beam.style.transition = 'all 0.4s ease-in';
+            }, 600);
+        }
+    </script>
+</body>
+</html>
+
